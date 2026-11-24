@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI
 
 from ..config import Settings, get_settings
+from ..jobs import JobRunner, make_handler
 from ..storage import ExtractionRepository, FeedbackRepository, PromptRepository, init_db
 from .auth import require_api_key
 from .errors import install_error_handlers
@@ -25,8 +26,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         init_db(settings.db_path)
         app.state.prompts.seed_builtin()
         settings.storage_dir.mkdir(parents=True, exist_ok=True)
-        # Phase 2: tạo và start JobRunner ở đây, gắn vào app.state, stop() sau yield.
-        yield
+        handler = make_handler(settings, app.state.extractions, app.state.prompts)
+        runner = JobRunner(app.state.extractions, handler, settings.worker_count, settings.worker_poll_seconds)
+        app.state.runner = runner
+        runner.start()
+        try:
+            yield
+        finally:
+            runner.stop()
 
     app = FastAPI(title="Pharmacy OCR Service", lifespan=lifespan)
     app.state.settings = settings
