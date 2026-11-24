@@ -13,6 +13,8 @@ from ..storage import ExtractionRepository, FeedbackRepository, PromptRepository
 from .auth import require_api_key
 from .errors import install_error_handlers
 from .routes_extractions import router as extractions_router
+from .routes_prompts import router as prompts_router
+from .routes_stats_parse import router as stats_parse_router
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -42,4 +44,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.feedback = FeedbackRepository(settings.db_path)
     install_error_handlers(app)
     app.include_router(extractions_router, prefix="/api/v1", dependencies=[Depends(require_api_key)])
+    app.include_router(stats_parse_router, prefix="/api/v1", dependencies=[Depends(require_api_key)])
+    app.include_router(prompts_router, prefix="/api/v1", dependencies=[Depends(require_api_key)])
     return app
