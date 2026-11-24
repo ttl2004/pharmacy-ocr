@@ -94,6 +94,10 @@ class ExtractionRepository:
                          "WHERE id = ?", (STATUS_FAILED, error, now, now, id))
 
     def delete(self, id: str) -> None:
-        """Xoá extraction; ảnh và feedback tự xoá theo ON DELETE CASCADE."""
-        with connect(self.db_path) as conn:
+        """Xoá extraction; ảnh và feedback tự xoá theo ON DELETE CASCADE.
+
+        Bản cũ từng bị bản này thay thế được mở lại (superseded_by = NULL) trong cùng transaction.
+        """
+        with write_transaction(self.db_path) as conn:
+            conn.execute("UPDATE extractions SET superseded_by = NULL WHERE superseded_by = ?", (id,))
             conn.execute("DELETE FROM extractions WHERE id = ?", (id,))

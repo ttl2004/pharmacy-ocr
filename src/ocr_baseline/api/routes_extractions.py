@@ -1,4 +1,4 @@
-"""Endpoint tạo extraction."""
+"""Endpoint extraction: tạo, xem, tải ảnh, chạy lại, lưu feedback, xoá."""
 from uuid import uuid4
 
 from fastapi import APIRouter, File, Form, Request, Response, UploadFile

@@ -59,11 +59,11 @@ Tất cả endpoint nằm dưới prefix `/api/v1` và cần header `X-API-Key`.
 | GET | `/extractions/{id}/images/{index}` | Tải ảnh WebP đã tối ưu |
 | POST | `/extractions/{id}/rerun` | Chạy lại (`mode`: `full` hoặc `llm_only`, tuỳ chọn `prompt_id`), trả `202` |
 | PUT | `/extractions/{id}/feedback` | Lưu `rating` 1-5 và `final_fields`, trả bảng độ lệch so với đề xuất |
-| DELETE | `/extractions/{id}` | Xoá extraction và ảnh (`409` khi đang chạy) |
+| DELETE | `/extractions/{id}` | Xoá extraction và ảnh, trả `204` (`409` khi đang chạy) |
 | GET | `/stats?group_by=prompt\|engine\|model\|source` | Thống kê điểm sao và tỉ lệ chỉnh sửa theo nhóm |
 | POST | `/parse` | Parse thử các trường dạng text |
 | GET | `/prompts` | Danh sách phiên bản prompt |
-| POST | `/prompts` | Tạo phiên bản prompt mới |
+| POST | `/prompts` | Tạo phiên bản prompt mới, trả `201` |
 | POST | `/prompts/{id}/activate` | Đặt prompt làm bản đang dùng |
 
 Lỗi luôn có dạng `{"error": {"code": "...", "message": "..."}}`. Các mã lỗi:
@@ -98,8 +98,8 @@ Sao chép `.env.example` thành `.env`. Các biến chính (mặc định trong 
 | Nhóm | Biến |
 |---|---|
 | API | `OCR_SERVICE_API_KEY` (bắt buộc với service), `OCR_SERVICE_URL` (`http://127.0.0.1:8000`, dùng cho Streamlit) |
-| LLM | `DEEPSEEK_API_KEY` (bắt buộc), `DEEPSEEK_BASE_URL`, `DEEPSEEK_MODEL` (`deepseek-chat`), `LLM_TIMEOUT` (180) |
-| Google Vision | `GOOGLE_VISION_API_KEY`, `VISION_TIMEOUT` (60) |
+| LLM | `DEEPSEEK_API_KEY` (bắt buộc cho tách thông tin; thiếu thì service vẫn chạy nhưng job báo lỗi), `DEEPSEEK_BASE_URL` (`https://api.deepseek.com`), `DEEPSEEK_MODEL` (`deepseek-chat`), `LLM_TIMEOUT` (180) |
+| Google Vision | `GOOGLE_VISION_API_KEY` (thiếu thì tự dùng OCR cục bộ), `VISION_TIMEOUT` (60) |
 | OCR cục bộ | `OCR_THREADS` (0 = tự chọn), `OCR_ENABLE_MKLDNN` (true), `OCR_DET_LIMIT_SIDE` (1600), `MODELS_DIR` (thư mục `models/`) |
 | Engine mặc định | `OCR_ENGINE` (`vision` hoặc `local`, mặc định `vision`) |
 | Worker | `WORKER_COUNT` (1), `WORKER_POLL_SECONDS` (1.0) |

@@ -56,23 +56,23 @@ class OcrServiceClient:
         form = {"prompt_id": str(prompt_id)} if prompt_id is not None else None
         return self._request("POST", "/extractions", files=multipart, data=form).json()
 
-    def get_extraction(self, extraction_id: int) -> dict:
+    def get_extraction(self, extraction_id: str) -> dict:
         return self._request("GET", f"/extractions/{extraction_id}").json()
 
-    def get_image(self, extraction_id: int, index: int) -> bytes:
+    def get_image(self, extraction_id: str, index: int) -> bytes:
         return self._request("GET", f"/extractions/{extraction_id}/images/{index}").content
 
-    def rerun(self, extraction_id: int, mode: str, prompt_id: int | None = None) -> dict:
+    def rerun(self, extraction_id: str, mode: str, prompt_id: int | None = None) -> dict:
         body: dict = {"mode": mode}
         if prompt_id is not None:
             body["prompt_id"] = prompt_id
         return self._request("POST", f"/extractions/{extraction_id}/rerun", json=body).json()
 
-    def put_feedback(self, extraction_id: int, rating: int, final_fields: dict) -> dict:
+    def put_feedback(self, extraction_id: str, rating: int, final_fields: dict) -> dict:
         body = {"rating": rating, "final_fields": final_fields}
         return self._request("PUT", f"/extractions/{extraction_id}/feedback", json=body).json()
 
-    def delete(self, extraction_id: int) -> None:
+    def delete(self, extraction_id: str) -> None:
         self._request("DELETE", f"/extractions/{extraction_id}")
 
     def stats(self, group_by: str) -> dict:

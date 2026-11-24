@@ -12,6 +12,7 @@ _INGREDIENT_RE = re.compile(
     r"(?P<don_vi>(?:mg|mcg|µg|μg|g|ml|IU|UI)\b|%)",
     re.IGNORECASE,
 )
+_CONCENTRATION_REST_RE = re.compile(r"^/\s*\d+(?:[.,]\d+)?\s*(?:ml|g)\b\.?$", re.IGNORECASE)
 _SPLIT_RE = re.compile(r"[;\n]")
 _PACK_PAIR_RE = re.compile(r"(\d+)\s*([a-z]+)")
 _SHELF_LIFE_RE = re.compile(r"(\d+)\s*(thang|nam|ngay)")
@@ -36,6 +37,10 @@ def parse_active_ingredients(text: str) -> list[dict] | None:
     for item in items:
         m = _INGREDIENT_RE.match(item)
         if not m:
+            return None
+        rest = item[m.end():].strip()
+        # Nồng độ dạng "500mg/5ml" thì chấp nhận; còn chữ số khác (vd mục bị gộp) thì cả trường là None
+        if rest and not _CONCENTRATION_REST_RE.match(rest) and re.search(r"\d", rest):
             return None
         unit = m.group("don_vi").lower()
         result.append(

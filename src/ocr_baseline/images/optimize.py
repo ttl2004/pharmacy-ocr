@@ -18,7 +18,7 @@ class OptimizedImage:
 
 
 def _has_alpha(img: Image.Image) -> bool:
-    return img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info)
+    return img.mode in ("RGBA", "LA", "PA", "La", "RGBa") or (img.mode == "P" and "transparency" in img.info)
 
 
 def optimize_to_webp(data: bytes, max_side: int, quality: int) -> OptimizedImage:
@@ -38,7 +38,7 @@ def optimize_to_webp(data: bytes, max_side: int, quality: int) -> OptimizedImage
             out = io.BytesIO()
             img.save(out, format="WEBP", quality=quality)
             return OptimizedImage(data=out.getvalue(), width=img.width, height=img.height)
-    except (UnidentifiedImageError, Image.DecompressionBombError, OSError) as e:
+    except (UnidentifiedImageError, Image.DecompressionBombError, OSError, ValueError, SyntaxError) as e:
         raise UploadRejected("unsupported_format", f"Không đọc được ảnh: {e}") from e
 
 

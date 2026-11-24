@@ -25,7 +25,7 @@ def _to_bool(value: str) -> bool:
 
 @dataclass(frozen=True)
 class Settings:
-    # Bảo vệ API: rỗng = không kiểm tra khoá
+    # Bảo vệ API: bắt buộc, rỗng thì service không khởi động
     api_key: str
 
     # LLM (DeepSeek, API tương thích OpenAI)
