@@ -2,7 +2,7 @@
 
 Chưa có dataset có nhãn để đo độ chính xác của profile này.
 Muốn tăng độ chính xác: viết thêm quy ước cho từng cột trong phần mô tả bên dưới
-(vd "mỗi chống chỉ định là một ý"), giống cách prompt v2 của profile food.
+(vd "mỗi chống chỉ định là một ý"), giống cách làm ở các prompt có quy ước chi tiết.
 """
 from .base import KIND_TEXT, Field, Profile
 

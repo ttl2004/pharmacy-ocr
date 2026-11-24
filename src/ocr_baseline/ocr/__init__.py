@@ -2,11 +2,11 @@
 
 Thêm hướng OCR mới:
     1. Viết class có `run()` và `name` (xem vision.py).
-    2. Thêm mã hướng vào constants.py (METHOD_..., METHOD_LABELS).
+    2. Thêm mã engine vào constants.py (ENGINE_...).
     3. Thêm nhánh trong create_engine() bên dưới.
 """
 from ..config import Settings
-from ..constants import METHOD_LOCAL, METHOD_VISION
+from ..constants import ENGINE_LOCAL, ENGINE_VISION
 from .errors import OcrError, OcrImageError, OcrUnavailableError
 from .types import OcrLine, OcrResult
 
@@ -14,12 +14,12 @@ __all__ = ["OcrError", "OcrImageError", "OcrLine", "OcrResult", "OcrUnavailableE
 
 
 def create_engine(method: str, settings: Settings):
-    if method == METHOD_VISION:
+    if method == ENGINE_VISION:
         from .vision import VisionEngine
 
         return VisionEngine(settings.google_vision_api_key, timeout=settings.vision_timeout)
 
-    if method == METHOD_LOCAL:
+    if method == ENGINE_LOCAL:
         from .local import LocalOcrEngine  # import chậm (Paddle, torch) -> chỉ import khi cần
 
         return LocalOcrEngine(settings.models_dir, threads=settings.ocr_threads,
