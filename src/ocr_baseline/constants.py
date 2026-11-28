@@ -1,38 +1,46 @@
-"""Các mã dùng chung trong toàn bộ project (lưu trong DB, hiển thị trên giao diện)."""
+"""Các mã dùng chung trong toàn bộ project (lưu trong DB, trả qua API)."""
 
-# Chế độ nhập dữ liệu -> cột `mode` trong bảng records
-MODE_UPLOAD = "UPLOAD"     # Chế độ 1: người dùng tự tải ảnh lên (nhiều ảnh = nhiều mặt của 1 sản phẩm)
-MODE_DATASET = "DATASET"   # Chế độ 2: chạy cả thư mục, mỗi ảnh là 1 sản phẩm
+# Engine OCR
+ENGINE_VISION = "vision"   # Google Cloud Vision + LLM
+ENGINE_LOCAL = "local"     # OCR local (PaddleOCR + VietOCR, CPU) + LLM
 
-MODE_LABELS = {
-    MODE_UPLOAD: "Chế độ 1 - Tải ảnh lên",
-    MODE_DATASET: "Chế độ 2 - Thư mục ảnh (dataset)",
-}
+# Trạng thái extraction
+STATUS_QUEUED = "queued"
+STATUS_RUNNING = "running"
+STATUS_SUCCEEDED = "succeeded"
+STATUS_FAILED = "failed"
 
-# Tiền tố mã bản ghi: UP-000001, DS-000002
-CODE_PREFIX = {
-    MODE_UPLOAD: "UP",
-    MODE_DATASET: "DS",
-}
+# Chế độ chạy: full = OCR + LLM, llm_only = dùng lại text OCR có sẵn, chỉ chạy LLM
+MODE_FULL = "full"
+MODE_LLM_ONLY = "llm_only"
 
-# Cách thực hiện (hướng OCR) -> cột `ocr_method`
-METHOD_VISION = "vision"   # Google Cloud Vision + LLM
-METHOD_LOCAL = "local"     # OCR local (PaddleOCR + VietOCR, CPU) + LLM
+# Nguồn của một trường kết quả
+SOURCE_SECTION = "section"
+SOURCE_LLM = "llm"
+SOURCE_NONE = "none"
 
-METHOD_LABELS = {
-    METHOD_VISION: "Google Cloud Vision + LLM (chính xác nhất, cần mạng)",
-    METHOD_LOCAL: "OCR local + LLM (chạy trên máy, không gửi ảnh ra ngoài)",
-}
+# Loại chỉnh sửa của người dùng so với kết quả máy (feedback)
+EDIT_UNCHANGED = "unchanged"
+EDIT_MINOR = "minor_edit"
+EDIT_MAJOR = "major_edit"
+EDIT_FILLED = "filled"
+EDIT_CLEARED = "cleared"
 
-# Trạng thái bản ghi -> cột `status`
-STATUS_AUTO = "auto"           # máy tự xử lý, chưa có người kiểm tra
-STATUS_REVIEWED = "reviewed"   # người dùng đã kiểm tra / chỉnh sửa
-STATUS_ERROR = "error"         # xử lý lỗi (xem cột error_message)
+SCHEMA_VERSION = "1"
+IMAGE_CONTENT_TYPE = "image/webp"
 
-STATUS_LABELS = {
-    STATUS_AUTO: "Chưa duyệt",
-    STATUS_REVIEWED: "Đã duyệt",
-    STATUS_ERROR: "Lỗi",
-}
+# Các trường văn bản dài, có thể tách theo tiêu đề đoạn
+SECTION_FIELDS = (
+    "chi_dinh",
+    "chong_chi_dinh",
+    "lieu_dung_cach_dung",
+    "tac_dung_khong_mong_muon",
+    "than_trong",
+    "tuong_tac_thuoc",
+    "phu_nu_co_thai_cho_con_bu",
+    "qua_lieu",
+    "bao_quan",
+)
 
-IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".bmp", ".webp", ".tif", ".tiff")
+# Các trường có cấu trúc, luôn do LLM trích
+STRUCTURED_FIELDS = ("hoat_chat_ham_luong", "quy_cach_dong_goi", "han_dung")

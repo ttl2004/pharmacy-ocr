@@ -1,29 +1,24 @@
-"""Giao diện OCR Baseline.
+"""Công cụ nội bộ giả lập backend: gọi OCR service qua HTTP.
 
 Chạy:  streamlit run app.py
 File này chỉ chọn trang; nội dung từng trang nằm trong thư mục ui/.
+Không import gói xử lý (ocr_baseline), chỉ nói chuyện với service qua ui/api_client.py.
 """
 import streamlit as st
 
-from ocr_baseline.config import get_settings
-from ocr_baseline.profiles import get_profile
-from ui import page_dataset, page_prompts, page_records, page_upload, state
-from ui.sidebar import render_sidebar
+from ui import page_prompts, page_review, page_stats, page_submit
+from ui.api_client import get_client
 
-st.set_page_config(page_title="OCR Baseline", layout="wide")
+st.set_page_config(page_title="OCR service - công cụ nội bộ", layout="wide")
 
-settings = get_settings()
-state.init_state(settings.default_method, settings.default_profile)
-page = render_sidebar(settings)
+PAGES = {
+    "Gửi ảnh": page_submit,
+    "Duyệt": page_review,
+    "Thống kê": page_stats,
+    "Prompt": page_prompts,
+}
 
-method = st.session_state[state.METHOD]
-profile = get_profile(st.session_state[state.PROFILE])
+st.sidebar.title("OCR service")
+page = st.sidebar.radio("Trang", list(PAGES), label_visibility="collapsed")
 
-if page == state.PAGE_UPLOAD:
-    page_upload.render(settings, method, profile)
-elif page == state.PAGE_DATASET:
-    page_dataset.render(settings, method, profile)
-elif page == state.PAGE_RECORDS:
-    page_records.render(settings, method)
-else:
-    page_prompts.render(settings, profile)
+PAGES[page].render(get_client())
