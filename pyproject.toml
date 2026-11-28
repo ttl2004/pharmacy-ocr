@@ -17,6 +17,7 @@ dependencies = [
     "numpy",
     "opencv-contrib-python",
     "pillow",
+    "pillow-heif",
     "requests",
     "streamlit>=1.40",
     "fastapi>=0.110",

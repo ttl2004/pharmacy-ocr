@@ -1,6 +1,9 @@
 """Kiểm tra ảnh tải lên: số lượng, dung lượng và định dạng thật (magic bytes)."""
 
 
+_HEIC_BRANDS = {b"heic", b"heix", b"heim", b"heis", b"mif1", b"msf1", b"heif"}
+
+
 class UploadRejected(Exception):
     """Ảnh tải lên bị từ chối. `code` khớp với mã lỗi của API."""
 
@@ -18,6 +21,9 @@ def detect_format(data: bytes) -> str | None:
         return "png"
     if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
         return "webp"
+    # HEIC/HEIF (ảnh iPhone): hộp ftyp ở byte 4-8, brand ở byte 8-12
+    if data[4:8] == b"ftyp" and data[8:12] in _HEIC_BRANDS:
+        return "heic"
     return None
 
 
@@ -38,5 +44,5 @@ def check_image(data: bytes, index: int, max_bytes: int) -> None:
     if detect_format(data) is None:
         raise UploadRejected(
             "unsupported_format",
-            f"Ảnh thứ {index} không phải JPEG, PNG hoặc WebP",
+            f"Ảnh thứ {index} không phải JPEG, PNG, WebP hoặc HEIC",
         )

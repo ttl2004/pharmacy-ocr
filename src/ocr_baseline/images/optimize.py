@@ -5,9 +5,13 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+from pillow_heif import register_heif_opener
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 from .validation import UploadRejected
+
+# Cho phép Image.open đọc HEIC/HEIF (ảnh iPhone); exif_transpose bên dưới vẫn xoay đúng chiều
+register_heif_opener()
 
 
 @dataclass(frozen=True)
