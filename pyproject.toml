@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ocr-baseline"
 version = "1.0.0"
-description = "OCR baseline: Google Cloud Vision / OCR local (PaddleOCR + VietOCR) + LLM tách cột + SQLite"
+description = "OCR service: tờ HDSD thuốc -> JSON"
 requires-python = ">=3.10"
 dependencies = [
     # OCR local (ghim phiên bản: paddlepaddle 3.3.x lỗi oneDNN trên CPU)
@@ -16,10 +16,13 @@ dependencies = [
     # torch (bản CPU) và vietocr cài riêng, xem README
     "numpy",
     "opencv-contrib-python",
-    "pandas",
     "pillow",
+    "pillow-heif",
     "requests",
     "streamlit>=1.40",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "python-multipart>=0.0.9",
     "openai>=1.30",
     "python-dotenv",
 ]
